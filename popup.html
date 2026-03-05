@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinguaVid</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            width: 400px;
+            min-height: 500px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .header h1 {
+            font-size: 22px;
+            color: #00d9ff;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.6);
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border: none;
+            border-radius: 8px;
+            color: rgba(255,255,255,0.7);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+        
+        .tab.active {
+            background: #00d9ff;
+            color: #1a1a2e;
+            font-weight: 600;
+        }
+        
+        .tab:hover:not(.active) {
+            background: rgba(255,255,255,0.1);
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 5px;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00d9ff;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #00d9ff;
+            border: none;
+            border-radius: 6px;
+            color: #1a1a2e;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: #00b8d9;
+            transform: translateY(-1px);
+        }
+        
+        .btn.secondary {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        
+        .btn.secondary:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .user-info {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .user-info p {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .user-info .email {
+            color: #00d9ff;
+            font-weight: 500;
+        }
+        
+        .word-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .word-card {
+            background: rgba(255,255,255,0.05);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .word-card .word {
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .word-card .translation {
+            color: rgba(255,255,255,0.6);
+            font-size: 13px;
+        }
+        
+        .word-card .pos-tag {
+            font-size: 10px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+        
+        .word-card .delete-btn {
+            background: transparent;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .word-card .delete-btn:hover {
+            opacity: 1;
+        }
+        
+        .legend {
+            background: rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .legend h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.9);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+        
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            margin-right: 8px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .empty-state p {
+            font-size: 13px;
+        }
+        
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #00d9ff;
+            color: #1a1a2e;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        
+        .settings-row label {
+            font-size: 13px;
+        }
+        
+        .settings-row select {
+            width: auto;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>LinguaVid</h1>
+        <p>Dual Subtitle Language Learner</p>
+    </div>
+    
+    <div class="tabs">
+        <button class="tab active" data-tab="account">Account</button>
+        <button class="tab" data-tab="words">Saved Words</button>
+        <button class="tab" data-tab="settings">Settings</button>
+    </div>
+    
+    <div id="account" class="section active">
+        <div id="loggedOut">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="••••••••">
+            </div>
+            <button class="btn" id="loginBtn">Sign In</button>
+            <p style="text-align: center; margin-top: 15px; font-size: 12px; color: rgba(255,255,255,0.5);">
+                Enter any email to create account locally
+            </p>
+        </div>
+        
+        <div id="loggedIn" style="display: none;">
+            <div class="user-info">
+                <p>Signed in as</p>
+                <p class="email" id="userEmail"></p>
+            </div>
+            <button class="btn secondary" id="logoutBtn">Sign Out</button>
+        </div>
+    </div>
+    
+    <div id="words" class="section">
+        <div id="wordsContainer">
+            <div class="word-list" id="wordList"></div>
+        </div>
+        <div id="noWords" class="empty-state" style="display: none;">
+            <p>No saved words yet.</p>
+            <p style="margin-top: 10px;">Click on any word while watching a video to save it!</p>
+        </div>
+    </div>
+    
+    <div id="settings" class="section">
+        <div class="settings-row">
+            <label>Native Language</label>
+            <select id="nativeLang">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="zh">Chinese</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+            </select>
+        </div>
+        <div class="settings-row">
+            <label>Learning Language</label>
+            <select id="learningLang">
+                <option value="es">Spanish</option>
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="it">Italian</option>
+                <option value="pt">Portuguese</option>
+                <option value="ru">Russian</option>
+                <option value="zh">Chinese</option>
+                <option value="ja">Japanese</option>
+                <option value="ko">Korean</option>
+            </select>
+        </div>
+        
+        <div class="legend">
+            <h3>Part of Speech Colors</h3>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6b6b;"></div>
+                <span>Nouns</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #4ecdc4;"></div>
+                <span>Verbs</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffe66d;"></div>
+                <span>Adjectives</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #a29bfe;"></div>
+                <span>Adverbs</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #fd79a8;"></div>
+                <span>Pronouns</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #74b9ff;"></div>
+                <span>Prepositions</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #b2bec3;"></div>
+                <span>Other</span>
+            </div>
+        </div>
+        
+        <button class="btn" id="saveSettingsBtn" style="margin-top: 15px;">Save Settings</button>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <script src="popup.js"></script>
+</body>
+</html>

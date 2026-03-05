@@ -1,0 +1,36 @@
+{
+    "manifest_version": 3,
+    "name": "LinguaVid - Dual Subtitle Language Learner",
+    "version": "1.0.0",
+    "description": "Learn languages with dual subtitles and color-coded parts of speech",
+    "permissions": [
+        "declarativeNetRequest",
+        "activeTab",
+        "scripting",
+        "storage"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "css": ["styles.css"],
+            "run_at": "document_end"
+        }
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "declarative_net_request": {
+        "rule_resources": [{
+            "id": "ruleset_1",
+            "enable": true,
+            "path": "rules.json"
+        }]
+    }
+}
